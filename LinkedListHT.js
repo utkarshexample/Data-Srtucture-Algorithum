@@ -8,6 +8,7 @@ class Node {
 class LinkedList {
     constructor() {
         this.head = null;
+        this.tail = null;
         this.size = 0;
     }
 
@@ -23,27 +24,26 @@ class LinkedList {
         const node = new Node(value);
         if(this.isEmpty()) {
             this.head = node;
+            this.tail = node;
         } else {
             node.next = this.head;
             this.head = node; 
         }
         this.size++;
     }
-    // o(n)
+    // o(1)
     append(value) {
         const node = new Node(value);
         if(this.isEmpty()) {
             this.head = node;
+            this.tail = node;
         } else {
-            let prev = this.head;
-            while(prev.next) {
-                prev = prev.next;
-            }
-            prev.next = node;
+            this.tail.next = node;
+            this.tail = node;
         }
         this.size++;
     }
-
+    
     insert(index,value) {
         if(index<0 || index > this.size) {
             console.log("Index out of bound");
@@ -62,26 +62,37 @@ class LinkedList {
             this.size++;
         }
     }
-
-    removeFrom(index) {
-        if(index < 0 || index > this.size) {
-            console.log("Index out of bound");
-            return;
+    // O(1)
+    removeFromFront() {
+       if(this.isEmpty()) {
+         return null;
+       } else {
+         const value = this.head.value;
+         this.head = this.head.next;
+         this.size--
+         return value;
+       }
+    }
+    // O(n)
+    removeFromEnd() {
+        if(this.isEmpty()) {
+            return null;
+        } 
+        const value = this.tail.value;
+        if (this.size === 1) {
+            this.head = null;
+            this.tail = null;
         }
-        let removeNode;
-        if(index === 0) {
-            removeNode = this.head;
-            this.head = this.head.next;
-        } else {
+        else {
             let prev = this.head;
-            for(let i=0; i<index-1;i++) {
-                prev = prev.next
+            while(prev.next !== this.tail) {
+                prev = prev.next;
             }
-            removeNode = prev.next;
-            prev.next = removeNode.next;
+            prev.next = null;
+            this.tail = prev;
         }
-        this.size--
-        return removeNode.value;
+        this.size--;
+        return value;
     }
 
     removeValue(value) {
@@ -152,14 +163,17 @@ class LinkedList {
     }
 }
 
-const list = new LinkedList();
-console.log("empty ?" + list.isEmpty())
-list.append(5);
-list.append(15);
-list.append(25);
-list.insert(1,10);
-list.print();
-list.reverse();
-list.print();
+// const list = new LinkedList();
+// console.log("empty ?" + list.isEmpty())
+// list.append(5);
+// list.append(15);
+// list.append(25);
+// list.insert(1,10);
+// list.print();
+// console.log(list.removeFromEnd());
+// list.print();
+// console.log(list.removeFromEnd());
+// list.print();
+module.exports = LinkedList;
 //console.log(list.removeValue(2));
 //console.log("Index is " +list.search(50));
